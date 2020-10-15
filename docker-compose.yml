@@ -12,7 +12,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./tests/create.db.sql:/docker-entrypoint-initdb.d/create.db.sql:ro
+      - ./tests/resources/create.db.sql:/docker-entrypoint-initdb.d/create.db.sql:ro
       - mysql_vol:/var/lib/mysql
 
   db-php:

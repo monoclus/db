@@ -7,8 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 final class ConnectionTest extends TestCase
 {
-    use LoggingTrait;
-
     public function testCanConnect()
     {
         $conn = new Connection();

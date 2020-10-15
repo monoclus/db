@@ -13,6 +13,7 @@ final class DeleteTest extends TestCase
     public function test_simpleDelete()
     {
         $res = Connection::create()
+            ->setLogger($this->logger())
             ->table('a')
             ->filter(['a' => 2])
             ->delete();
@@ -23,6 +24,7 @@ final class DeleteTest extends TestCase
     {
         $this->expectException(PDOException::class);
         Connection::create()
+            ->setLogger($this->logger())
             ->table('a')
             ->filter(['x' => 1])
             ->delete();

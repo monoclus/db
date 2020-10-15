@@ -13,6 +13,7 @@ final class InsertTest extends TestCase
     public function test_simpleInsert()
     {
         $res = Connection::create()
+            ->setLogger($this->logger())
             ->table('a')
             ->insert(['a' => 2]);
         self::assertTrue($res);
@@ -22,6 +23,7 @@ final class InsertTest extends TestCase
     {
         $this->expectException(PDOException::class);
         Connection::create()
+            ->setLogger($this->logger())
             ->table('a')
             ->insert([
                 'a' => 2,

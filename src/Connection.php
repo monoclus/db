@@ -54,7 +54,7 @@ class Connection extends PDO
      */
     public function setLogger($logger)
     {
-        $this->_debugMode = $logger;
+        $this->logger = $logger;
         return $this;
     }
 

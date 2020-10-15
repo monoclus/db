@@ -13,6 +13,7 @@ final class UpdateTest extends TestCase
     public function test_simpleUpdate()
     {
         $res = Connection::create()
+            ->setLogger($this->logger())
             ->table('a')
             ->filter(['a' => 2])
             ->update(['b' => 3]);
@@ -23,6 +24,7 @@ final class UpdateTest extends TestCase
     {
         $this->expectException(PDOException::class);
         Connection::create()
+            ->setLogger($this->logger())
             ->table('a')
             ->filter(['a' => 1])
             ->update([
