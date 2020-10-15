@@ -4,14 +4,12 @@
 namespace monoclus\db;
 
 
+use PDO;
 use PDOStatement;
 
-class Connection extends \PDO
+class Connection extends PDO
 {
-    /**
-     * @var bool
-     */
-    private $debugMode = false;
+    private $logger = null;
 
     /**
      * If no parameters are provided, the connection is getting the following variables from $_ENV:
@@ -28,15 +26,35 @@ class Connection extends \PDO
         $passwd = $passwd ?? $_ENV['DB_PASS'];
         parent::__construct($dsn, $username, $passwd, $options);
         $debug = (bool)$_ENV['DB_DEBUG'];
-        $this->debug($debug);
+        $this->throwExceptionOnError(true);
     }
 
     /**
-     * @param false $debug
+     * Sugar for creating a Connection, based on $_ENV[...]
+     * @return Connection
+     */
+    public static function create()
+    {
+        return new Connection();
+    }
+
+    /**
+     * @param bool $throw
      * @return $this
      */
-    public function debug($debug=true) {
-        $this->debugMode = $debug;
+    public function throwExceptionOnError($throw = true)
+    {
+        $this->setAttribute(PDO::ATTR_ERRMODE, $throw ? PDO::ERRMODE_EXCEPTION : PDO::ERRMODE_WARNING);
+        return $this;
+    }
+
+    /**
+     * @param bool $debug
+     * @return $this
+     */
+    public function setLogger($logger)
+    {
+        $this->_debugMode = $logger;
         return $this;
     }
 
@@ -44,7 +62,8 @@ class Connection extends \PDO
      * @param $fieldName
      * @return string
      */
-    public function quoteField(string $fieldName) {
+    public function quoteField(string $fieldName)
+    {
         // TODO: "`" only works in MySQL
         return "`$fieldName`";
     }
@@ -62,11 +81,12 @@ class Connection extends \PDO
      * @param string $statement
      * @param array $params
      */
-    public function log(string $statement, array $params) {
-        if ($this->debugMode) {
-            echo $statement . "\n";
+    public function log(string $statement, array $params)
+    {
+        if ($this->logger) {
+            $this->logger->debug($statement);
             foreach ($params as $k => $v) {
-                echo "    $k: $v" . "\n";
+                $this->logger->debug("    $k: $v");
             }
         }
     }

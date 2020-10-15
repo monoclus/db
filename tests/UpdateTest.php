@@ -6,25 +6,26 @@ use PDOException;
 use PHPUnit\Framework\TestCase;
 
 
-final class InsertTest extends TestCase
+final class UpdateTest extends TestCase
 {
     use LoggingTrait;
 
-    public function test_simpleInsert()
+    public function test_simpleUpdate()
     {
         $res = Connection::create()
             ->table('a')
-            ->insert(['a' => 2]);
+            ->filter(['a' => 2])
+            ->update(['b' => 3]);
         self::assertTrue($res);
     }
 
-    public function test_InsertTooManyColumns()
+    public function test_updateTooManyColumns()
     {
         $this->expectException(PDOException::class);
         Connection::create()
             ->table('a')
-            ->insert([
-                'a' => 2,
+            ->filter(['a' => 1])
+            ->update([
                 'b' => 2,
                 'c' => 2,
                 'd' => 2,

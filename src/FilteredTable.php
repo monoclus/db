@@ -26,7 +26,7 @@ class FilteredTable
         $this->table = $table;
         $this->where = [];
         foreach ($where as $k => $v) {
-            $this->where[':W_' . $k] = $v;
+            $this->where[$k] = $v;
         }
     }
 
@@ -40,26 +40,23 @@ class FilteredTable
 
         $parameters = [];
 
-        // update ... set K1=V1, K2=V2 ....
-        // TODO: "`" only works in MySQL
         $valuesStrArr = [];
         foreach ($values as $k => $v) {
-            $valuesStrArr[] = '`' . $k . '`' . '=:V_' . $k;
+            $valuesStrArr[] = $this->table->getConnection()->quoteField($k) . '=:V_' . $k;
             $parameters[':V_' . $k] = $v;
         }
         $valuesStr = join(', ', $valuesStrArr);
 
-        // update ... where K1=V1 AND K2=V2 ...
-        // TODO: "`" only works in MySQL
         $whereStrArr = [];
         foreach ($this->where as $k => $v) {
-            $whereStrArr[] = '(`' . $k . '`' . '=:W_' . $k . ')';
-            $parameters[':W_' . $k] = $v;
+            $whereStrArr[] = '(' . $this->table->getConnection()->quoteField($k) . '=:W_' . $k . ')';
+            $parameters[':W_'.$k] = $v;
         }
         $whereStr = join(' and ', $whereStrArr);
 
         $sql = "update $tableName set $valuesStr where $whereStr";
 
+        $this->table->getConnection()->log($sql, $parameters);
         $stmt = $this->table->getConnection()->prepare($sql);
         return $stmt->execute($parameters);
     }
@@ -73,17 +70,16 @@ class FilteredTable
 
         $parameters = [];
 
-        // update ... where K1=V1 AND K2=V2 ...
-        // TODO: "`" only works in MySQL
         $whereStrArr = [];
         foreach ($this->where as $k => $v) {
-            $whereStrArr[] = '(`' . $k . '`' . '=:W_' . $k . ')';
-            $parameters[':W_' . $k] = $v;
+            $whereStrArr[] = '(' . $this->table->getConnection()->quoteField($k) . '=:W_' . $k . ')';
+            $parameters[':W_'.$k] = $v;
         }
         $whereStr = join(' and ', $whereStrArr);
 
         $sql = "delete from $tableName where $whereStr";
 
+        $this->table->getConnection()->log($sql, $parameters);
         $stmt = $this->table->getConnection()->prepare($sql);
         return $stmt->execute($parameters);
     }
