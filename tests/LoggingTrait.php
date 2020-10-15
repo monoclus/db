@@ -4,7 +4,6 @@ namespace monoclus\db;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use PHPUnit\Framework\TestCase;
 
 
 trait LoggingTrait
