@@ -13,6 +13,7 @@ final class DeleteTest extends TestCase
     public function test_simpleDelete()
     {
         $res = Connection::create()
+            ->throwExceptionOnError()
             ->setLogger($this->logger())
             ->table('a')
             ->filter(['a' => 2])
