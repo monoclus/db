@@ -1,1 +1,1 @@
-C:37:"PHPUnit\Runner\DefaultTestResultCache":156:{a:2:{s:7:"defects";a:1:{s:42:"monoclus\db\ConnectionTest::testCanConnect";i:5;}s:5:"times";a:1:{s:42:"monoclus\db\ConnectionTest::testCanConnect";d:0.017;}}}
+C:37:"PHPUnit\Runner\DefaultTestResultCache":156:{a:2:{s:7:"defects";a:1:{s:42:"monoclus\db\ConnectionTest::testCanConnect";i:4;}s:5:"times";a:1:{s:42:"monoclus\db\ConnectionTest::testCanConnect";d:0.032;}}}

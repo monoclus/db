@@ -22,10 +22,9 @@ services:
     depends_on:
       - mysql
     environment:
-      MYSQL_HOST: mysql
-      MYSQL_NAME: buygames
-      MYSQL_USER: root
-      MYSQL_PASS: root
+      DB_DSN: mysql:dbname=db;host=mysql
+      DB_USER: root
+      DB_PASS: root
     volumes:
     - "./:/opt/project/"
 

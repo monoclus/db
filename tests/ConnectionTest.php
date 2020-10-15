@@ -4,13 +4,18 @@ namespace monoclus\db;
 
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \monoclus\db\Connection
- */
+
 final class ConnectionTest extends TestCase
 {
-    public function testCanConnect() {
-        $conn = new Connection("mysql:dbname=db;host=mysql", 'root', 'root');
+    use LoggingTrait;
+
+    public function testCanConnect()
+    {
+        $db_dsn = $_ENV['DB_DSN'];
+        $db_user = $_ENV['DB_USER'];
+        $db_pass = $_ENV['DB_PASS'];
+        $this->logger()->info("Connecting to $db_user @ $db_dsn");
+        $conn = new Connection($db_dsn, $db_user, $db_pass);
         $this->assertNotNull($conn);
     }
 }
