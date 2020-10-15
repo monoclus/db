@@ -12,7 +12,7 @@ This is a lightweight wrapper for PDO. It is meant so solve some obvious gaps PD
                   
 ## Obvious limitations
 
-- It is not an ORM. Should you need one, try Doctrine.
+- It is not an ORM. Should you need one, try [Doctrine](https://www.doctrine-project.org/).
 - Version 0.1 only works with MySQL.
 - It is not a replacement for PDO
 
