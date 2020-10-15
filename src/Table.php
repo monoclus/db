@@ -4,6 +4,8 @@
 namespace monoclus\db;
 
 
+use PDOException;
+
 class Table
 {
     /**
@@ -21,7 +23,7 @@ class Table
      * @param string $tableName
      * @param Connection $connection
      */
-    public function __construct($tableName, Connection $connection)
+    public function __construct(string $tableName, Connection $connection)
     {
         $this->tableName = $tableName;
         $this->connection = $connection;
@@ -47,35 +49,40 @@ class Table
      * @param array $where
      * @return FilteredTable
      */
-    public function filter($where) {
+    public function filter($where)
+    {
         return new FilteredTable($this, $where);
     }
 
     /**
      * @param array $values
      * @return bool
+     * @throws PDOException
      */
     public function insert($values)
     {
-        $tableName = $this->tableName;
-
         $parameters = [];
 
-        // TODO: "`" only works in MySQL
         $fieldsStrArr = [];
         $valuesStrArr = [];
         foreach ($values as $k => $v) {
-            $fieldsStrArr[] = '`' . $k . '`';
-            $valuesStrArr[] = '=:V_' . $k;
+            $fieldsStrArr[] = $this->connection->quoteField($k);
+            $valuesStrArr[] = ':V_' . $k;
             $parameters[':V_' . $k] = $v;
         }
         $fieldsStr = join(', ', $fieldsStrArr);
         $valuesStr = join(', ', $valuesStrArr);
 
-        $sql = "insert into $tableName($fieldsStr) values($valuesStr)";
+        $sql = "insert into {$this->tableName}($fieldsStr) values($valuesStr)";
+
+        $this->getConnection()->log($sql, $parameters);
 
         $stmt = $this->connection->prepare($sql);
-        return $stmt->execute($parameters);
+        foreach ($parameters as $k => $v) {
+            $stmt->bindValue($k, $v);
+        }
+
+        return $stmt->execute();
     }
 
 }
